@@ -1,0 +1,14 @@
+# per-transaction pgbench logs: large (~85 MB) and regenerable; summaries in percentiles.txt are kept
+raw/**/txlog/
+
+# Python / editor / OS
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+.idea/
+.DS_Store
+
+# Office lock files
+~$*
+.~lock.*#
