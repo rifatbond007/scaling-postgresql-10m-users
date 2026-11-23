@@ -1,0 +1,6 @@
+progress: 10.0 s, 3132.3 tps, lat 10.066 ms stddev 2.549, 0 failed
+progress: 20.0 s, 3275.2 tps, lat 9.708 ms stddev 1.180, 0 failed
+progress: 30.0 s, 3206.4 tps, lat 9.910 ms stddev 2.280, 0 failed
+progress: 40.0 s, 3235.7 tps, lat 9.829 ms stddev 1.997, 0 failed
+progress: 50.0 s, 3194.3 tps, lat 9.952 ms stddev 2.675, 0 failed
+progress: 60.0 s, 3301.3 tps, lat 9.623 ms stddev 1.121, 0 failed

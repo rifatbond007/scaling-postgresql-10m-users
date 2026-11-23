@@ -1,0 +1,29 @@
+Timing is on.
+SET
+Time: 0.170 ms
+INSERT 0 1000000
+Time: 2254.843 ms (00:02.255)
+INSERT 0 19999793
+Time: 195931.971 ms (03:15.932)
+DELETE 26
+Time: 5189.662 ms (00:05.190)
+INSERT 0 10000000
+Time: 56305.256 ms (00:56.305)
+UPDATE 50000
+Time: 9718.692 ms (00:09.719)
+VACUUM
+Time: 22856.524 ms (00:22.857)
+    t    |  count   
+---------+----------
+ users   |  1000000
+ follows | 19999767
+ posts   | 10000000
+(3 rows)
+
+Time: 3253.132 ms (00:03.253)
+ db_size 
+---------
+ 3277 MB
+(1 row)
+
+Time: 6.251 ms

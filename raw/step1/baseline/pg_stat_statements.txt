@@ -1,0 +1,9 @@
+ calls | total_ms | mean_ms  |  pct  |                                 query                                  
+-------+----------+----------+-------+------------------------------------------------------------------------
+   110 |  4614370 | 41948.82 | 100.0 | SELECT p.id, p.user_id, p.body, p.created_at FROM follows f JOIN posts
+    16 |      251 |    15.68 |   0.0 | SELECT COALESCE(wait_event_type, $1) AS wait_event_type, COUNT(*) AS s
+    16 |      182 |    11.37 |   0.0 | SELECT COUNT(DISTINCT blocking.pid) as blocking_sessions FROM pg_locks
+    10 |      113 |    11.25 |   0.0 | INSERT INTO posts (user_id, body) VALUES ($1, $2 || $3)
+     5 |       99 |    19.80 |   0.0 | SELECT pg_database_size(current_database()) AS bytes
+(5 rows)
+

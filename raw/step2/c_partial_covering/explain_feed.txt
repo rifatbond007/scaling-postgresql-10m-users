@@ -1,0 +1,32 @@
+                                                                           QUERY PLAN                                                                           
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=990.03..990.10 rows=30 width=89) (actual time=18.102..18.107 rows=30 loops=1)
+   Buffers: shared hit=42 read=233
+   I/O Timings: shared read=17.371
+   ->  Sort  (cost=990.03..990.58 rows=220 width=89) (actual time=18.101..18.104 rows=30 loops=1)
+         Sort Key: posts.created_at DESC
+         Sort Method: top-N heapsort  Memory: 31kB
+         Buffers: shared hit=42 read=233
+         I/O Timings: shared read=17.371
+         ->  Nested Loop  (cost=0.87..983.53 rows=220 width=89) (actual time=0.494..17.985 rows=191 loops=1)
+               Buffers: shared hit=39 read=233
+               I/O Timings: shared read=17.371
+               ->  Index Only Scan using follows_pkey on follows f  (cost=0.44..8.79 rows=20 width=8) (actual time=0.246..0.261 rows=20 loops=1)
+                     Index Cond: (follower_id = 4242)
+                     Heap Fetches: 0
+                     Buffers: shared hit=19 read=2
+                     I/O Timings: shared read=0.190
+               ->  Limit  (cost=0.43..48.63 rows=11 width=89) (actual time=0.259..0.884 rows=10 loops=20)
+                     Buffers: shared hit=20 read=231
+                     I/O Timings: shared read=17.181
+                     ->  Index Scan using idx_posts_user_created_live on posts  (cost=0.43..48.63 rows=11 width=89) (actual time=0.258..0.882 rows=10 loops=20)
+                           Index Cond: (user_id = f.followee_id)
+                           Buffers: shared hit=20 read=231
+                           I/O Timings: shared read=17.181
+ Planning:
+   Buffers: shared hit=246 read=6 dirtied=1
+   I/O Timings: shared read=0.697
+ Planning Time: 1.430 ms
+ Execution Time: 18.136 ms
+(28 rows)
+

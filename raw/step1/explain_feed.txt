@@ -1,0 +1,43 @@
+                                                                         QUERY PLAN                                                                          
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=208180.29..208183.79 rows=30 width=89) (actual time=2111.049..2115.952 rows=30 loops=1)
+   Buffers: shared hit=751 read=154006
+   I/O Timings: shared read=4443.972
+   ->  Gather Merge  (cost=208180.29..208201.76 rows=184 width=89) (actual time=2105.841..2110.741 rows=30 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=751 read=154006
+         I/O Timings: shared read=4443.972
+         ->  Sort  (cost=207180.27..207180.50 rows=92 width=89) (actual time=2093.274..2093.278 rows=23 loops=3)
+               Sort Key: p.created_at DESC
+               Sort Method: quicksort  Memory: 32kB
+               Buffers: shared hit=751 read=154006
+               I/O Timings: shared read=4443.972
+               Worker 0:  Sort Method: top-N heapsort  Memory: 32kB
+               Worker 1:  Sort Method: top-N heapsort  Memory: 31kB
+               ->  Hash Join  (cost=9.07..207177.55 rows=92 width=89) (actual time=52.153..2093.109 rows=63 loops=3)
+                     Hash Cond: (p.user_id = f.followee_id)
+                     Buffers: shared hit=735 read=154006
+                     I/O Timings: shared read=4443.972
+                     ->  Parallel Seq Scan on posts p  (cost=0.00..196283.85 rows=4146507 width=89) (actual time=4.043..1840.807 rows=3316667 loops=3)
+                           Filter: (NOT is_deleted)
+                           Rows Removed by Filter: 16667
+                           Buffers: shared hit=610 read=154006
+                           I/O Timings: shared read=4443.972
+                     ->  Hash  (cost=8.80..8.80 rows=21 width=8) (actual time=0.072..0.072 rows=20 loops=3)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           Buffers: shared hit=65
+                           ->  Index Only Scan using follows_pkey on follows f  (cost=0.44..8.80 rows=21 width=8) (actual time=0.057..0.064 rows=20 loops=3)
+                                 Index Cond: (follower_id = 4242)
+                                 Heap Fetches: 0
+                                 Buffers: shared hit=65
+ Planning:
+   Buffers: shared hit=231
+ Planning Time: 0.704 ms
+ JIT:
+   Functions: 37
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.343 ms, Inlining 0.000 ms, Optimization 0.915 ms, Emission 14.980 ms, Total 17.238 ms
+ Execution Time: 2130.946 ms
+(39 rows)
+

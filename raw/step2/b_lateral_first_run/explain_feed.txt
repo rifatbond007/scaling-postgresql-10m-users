@@ -1,0 +1,34 @@
+                                                                        QUERY PLAN                                                                        
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1039.11..1039.18 rows=30 width=89) (actual time=3.380..3.384 rows=30 loops=1)
+   Buffers: shared hit=146 read=130 dirtied=1
+   I/O Timings: shared read=2.388
+   ->  Sort  (cost=1039.11..1039.68 rows=231 width=89) (actual time=3.379..3.381 rows=30 loops=1)
+         Sort Key: posts.created_at DESC
+         Sort Method: top-N heapsort  Memory: 31kB
+         Buffers: shared hit=146 read=130 dirtied=1
+         I/O Timings: shared read=2.388
+         ->  Nested Loop  (cost=0.87..1032.28 rows=231 width=89) (actual time=0.194..3.302 rows=189 loops=1)
+               Buffers: shared hit=143 read=130 dirtied=1
+               I/O Timings: shared read=2.388
+               ->  Index Only Scan using follows_pkey on follows f  (cost=0.44..8.80 rows=21 width=8) (actual time=0.159..0.169 rows=20 loops=1)
+                     Index Cond: (follower_id = 4242)
+                     Heap Fetches: 0
+                     Buffers: shared hit=20 read=1
+                     I/O Timings: shared read=0.105
+               ->  Limit  (cost=0.43..48.63 rows=11 width=89) (actual time=0.068..0.155 rows=9 loops=20)
+                     Buffers: shared hit=123 read=129 dirtied=1
+                     I/O Timings: shared read=2.283
+                     ->  Index Scan using idx_posts_user_created on posts  (cost=0.43..48.63 rows=11 width=89) (actual time=0.067..0.154 rows=9 loops=20)
+                           Index Cond: (user_id = f.followee_id)
+                           Filter: (NOT is_deleted)
+                           Rows Removed by Filter: 0
+                           Buffers: shared hit=123 read=129 dirtied=1
+                           I/O Timings: shared read=2.283
+ Planning:
+   Buffers: shared hit=202 read=33
+   I/O Timings: shared read=2.625
+ Planning Time: 3.273 ms
+ Execution Time: 3.419 ms
+(30 rows)
+

@@ -1,0 +1,30 @@
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1038.81..1038.89 rows=30 width=89) (actual time=2.855..2.860 rows=30 loops=1)
+   Buffers: shared hit=115 read=160
+   I/O Timings: shared read=1.242
+   ->  Sort  (cost=1038.81..1039.36 rows=221 width=89) (actual time=2.853..2.856 rows=30 loops=1)
+         Sort Key: p.created_at DESC
+         Sort Method: top-N heapsort  Memory: 31kB
+         Buffers: shared hit=115 read=160
+         I/O Timings: shared read=1.242
+         ->  Nested Loop  (cost=0.87..1032.28 rows=221 width=89) (actual time=0.066..2.750 rows=188 loops=1)
+               Buffers: shared hit=112 read=160
+               I/O Timings: shared read=1.242
+               ->  Index Only Scan using follows_pkey on follows f  (cost=0.44..8.80 rows=21 width=8) (actual time=0.034..0.049 rows=20 loops=1)
+                     Index Cond: (follower_id = 4242)
+                     Heap Fetches: 0
+                     Buffers: shared hit=21
+               ->  Index Scan using idx_posts_user_created on posts p  (cost=0.43..48.63 rows=11 width=89) (actual time=0.023..0.133 rows=9 loops=20)
+                     Index Cond: (user_id = f.followee_id)
+                     Filter: (NOT is_deleted)
+                     Rows Removed by Filter: 0
+                     Buffers: shared hit=91 read=160
+                     I/O Timings: shared read=1.242
+ Planning:
+   Buffers: shared hit=260 read=1
+   I/O Timings: shared read=0.166
+ Planning Time: 1.462 ms
+ Execution Time: 2.903 ms
+(26 rows)
+

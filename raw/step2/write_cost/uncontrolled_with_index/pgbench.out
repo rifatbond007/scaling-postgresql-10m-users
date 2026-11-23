@@ -1,0 +1,17 @@
+pgbench (16.16 (Debian 16.16-1.pgdg13+1))
+transaction type: /bench/write.sql
+scaling factor: 1
+query mode: simple
+number of clients: 32
+number of threads: 8
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 764961
+number of failed transactions: 0 (0.000%)
+latency average = 2.492 ms
+latency stddev = 1.488 ms
+initial connection time = 86.278 ms
+tps = 12758.888332 (without initial connection time)
+statement latencies in milliseconds and failures:
+         0.001           0  \set uid random(1, 1000000)
+         2.516           0  INSERT INTO posts (user_id, body) VALUES (:uid, 'hello from ' || :uid);
