@@ -10,10 +10,12 @@ conn = lambda: psycopg.connect(host=host, port=port, dbname="app", user="postgre
 ROUNDS = 200
 
 def others(results):
+    seen = collections.Counter()          # per-thread counter, merged after join (no shared writes)
     c = conn()
     for _ in range(ROUNDS):
-        results[c.execute("SHOW work_mem").fetchone()[0]] += 1
+        seen[c.execute("SHOW work_mem").fetchone()[0]] += 1
     c.close()
+    results.append(seen)
 
 def fresh_server_connections():
     """Close all server backends directly on Postgres, so pooled connections start with default settings.
@@ -28,8 +30,8 @@ def run(mode):
     a = conn()
     if mode == "session":
         a.execute("SET work_mem = '77MB'")
-    seen_by_a, leaked = collections.Counter(), collections.Counter()
-    threads = [threading.Thread(target=others, args=(leaked,)) for _ in range(20)]
+    seen_by_a, per_thread = collections.Counter(), []
+    threads = [threading.Thread(target=others, args=(per_thread,)) for _ in range(20)]
     for t in threads: t.start()
     for _ in range(ROUNDS):
         if mode == "session":
@@ -40,6 +42,7 @@ def run(mode):
                 seen_by_a[a.execute("SHOW work_mem").fetchone()[0]] += 1
     for t in threads: t.join()
     a.close()
+    leaked = sum(per_thread, collections.Counter())
     tot_a, tot_o = sum(seen_by_a.values()), sum(leaked.values())
     print(f"--- {mode} SET ---")
     print(f"  client A saw its own 77MB:          {seen_by_a['77MB']}/{tot_a} ({100*seen_by_a['77MB']/tot_a:.0f}%)")

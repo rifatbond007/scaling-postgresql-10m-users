@@ -4,7 +4,7 @@ Usage: count_connect.py N HOST PORT"""
 import sys, collections, psycopg
 n, host, port = int(sys.argv[1]), sys.argv[2], int(sys.argv[3])
 held, errors = [], collections.Counter()
-for i in range(n):
+for _ in range(n):
     try:
         held.append(psycopg.connect(host=host, port=port, dbname="app", user="postgres", password="lab", connect_timeout=5))
     except psycopg.OperationalError as e:

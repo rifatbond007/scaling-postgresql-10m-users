@@ -1,4 +1,5 @@
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;  -- Step 1: find slow queries
+CREATE EXTENSION IF NOT EXISTS pg_prewarm;          -- bench/run.sh: load hot data into cache before each run
 
 CREATE TABLE users (
   id          bigint PRIMARY KEY,

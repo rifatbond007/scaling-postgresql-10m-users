@@ -40,17 +40,17 @@ Workload: 32 clients, 90% feed reads / 10% writes, 120 s.
 |---|---:|---:|---|
 | 2,000 direct, `max_connections=100` | 100 | | ❌ 1,900 refused ("too many clients") |
 | 2,000 direct, `max_connections=2500` | ~1,200, then killed | over 2 GB | 💥 Out of memory |
-| 300 direct | 301 | 1.45 GB | 0 |
-| **2,000 through PgBouncer** | **9–21** | **~0.6 GB** | **0** ✅ |
+| 300 direct | 300 | 1.45 GB | 0 |
+| **2,000 through PgBouncer** | **8–20** | **~0.6 GB** | **0** ✅ |
 
 ## Key findings so far
 1. **The feed was slow because of a missing index.** Every feed read scanned all 10M posts.
 2. **One index fixed almost everything:** throughput rose about 950× and feed p95 dropped from 56 s to 0.1 s.
 3. **The query rewrite and partial index add little on this data.** Users have only about 9 posts each. Retest with celebrity users in Step 8.
-4. **Postgres can't take thousands of direct connections.** Each costs 1.5–2.6 MB, and the 2 GB server died at about 1,200. **PgBouncer** serves 2,000 clients on 9–21 real connections with 0 errors.
+4. **Postgres can't take thousands of direct connections.** Each costs 1.5–2.6 MB, and the 2 GB server died at about 1,200. **PgBouncer** serves 2,000 clients on 8–20 real connections with 0 errors.
 5. **PgBouncer's proven win is memory and stability, not speed.** Throughput against direct connections was inconclusive.
 6. **Pool size depends on the bottleneck:** small (about 2 × cores) when CPU-bound, larger when waiting on disk.
-7. **Never use session `SET` behind transaction pooling:** it leaked to 17% of other clients. Use `SET LOCAL`.
+7. **Never use session `SET` behind transaction pooling:** it leaked to other clients in every run (0.5–29% of their answers). Use `SET LOCAL`.
 8. **Measurement on a laptop is noisy.** The cache doesn't fit in the 2 GB container, so throughput varied up to 3× with the same settings. Only alternating, back-to-back runs are compared.
 
 ## Test machine

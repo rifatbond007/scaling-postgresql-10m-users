@@ -8,10 +8,10 @@ Implements Part B of `Scaling_PostgreSQL_10M_Users.docx`: one change at a time, 
 ```
 report/     human-readable results, one page per step   ← read these
 raw/        machine output per step (pgbench, EXPLAIN plans, txlog/)
-sql/        schema.sql, seed.sql
-bench/      workload scripts (feed*.sql, write.sql), run.sh, run_sampled.sh, sample.sh, percentiles.py
+sql/        schema.sql, seed.sql, step1_top_queries.sql, step2_indexes.sql, step2_index_report.sql
+bench/      workloads (feed*.sql, write.sql), run.sh, run_sampled.sh, sample.sh, percentiles.py,
+            count_connect.py, txmode_pitfall.py
 docker/     single.yml (Postgres, PgBouncer, bench client), bench.Dockerfile, pgbouncer/
-app/        Python routing/sharding code (Steps 4-7)
 ```
 
 ## Commands
@@ -40,7 +40,8 @@ docker compose -f docker/single.yml down -v
 docker compose -f docker/single.yml up -d pg
 docker exec -i pg psql -U postgres -d app < sql/schema.sql
 docker exec -i pg psql -U postgres -d app < sql/seed.sql
-# then recreate the Step 2 indexes (see report/step2_indexes.md)
+docker exec -i pg psql -U postgres -d app < sql/step2_indexes.sql   # final Step 2 indexes
+docker/pgbouncer/make-userlist.sh                                   # new hash for PgBouncer
 ```
 
 GUI connection: host `localhost`, port `5432`, db `app`, user `postgres`, password `lab`.

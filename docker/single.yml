@@ -38,7 +38,7 @@ services:
     mem_limit: 256m
     ulimits: { nofile: { soft: 10000, hard: 10000 } }
 
-  # pgbench / psql client; same image so no host install needed
+  # pgbench / psql / python client (run with: run --rm bench '...'); nothing installed on the host
   bench:
     build: { context: ., dockerfile: bench.Dockerfile }
     image: pglab-bench
@@ -49,7 +49,7 @@ services:
       PGUSER: postgres
       PGDATABASE: app
       HOME: /tmp
-    volumes: ["../bench:/bench", "../raw:/raw", "../sql:/sql"]
+    volumes: ["../bench:/bench", "../raw:/raw"]
     working_dir: /raw
     user: "${UID:-1000}:${GID:-1000}"   # write results as the host user, not root
     cpus: 4

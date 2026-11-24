@@ -2,6 +2,7 @@
 """Per-script latency percentiles from pgbench -l logs.
 
 pgbench log columns: client_id tx_no latency_us script_no epoch_s epoch_us
+(latency_us is "failed" or "skipped" for transactions that didn't complete; those are ignored)
 The proposal's awk mixed feed and write latencies; this splits them by script_no.
 Usage: percentiles.py PREFIX [script names in -f order...]
 """
@@ -14,7 +15,7 @@ for path in glob.glob(prefix + ".*"):
     with open(path) as fh:
         for line in fh:
             parts = line.split()
-            if len(parts) < 4 or parts[2] == "failed":
+            if len(parts) < 4 or parts[2] in ("failed", "skipped"):
                 continue
             lat.setdefault(int(parts[3]), []).append(int(parts[2]))
 

@@ -78,7 +78,7 @@ Writes only, 32 clients, 60 s each, after resetting the database state (VACUUM a
 ## Conclusions
 1. **One index did almost all the work:** about 950× throughput.
 2. **The rewrite and partial index barely matter on this data.** Revisit in Step 8.
-3. **The covering index works but is expensive** (602 MB). Only worth it if the follower count is a hot query.
+3. **The covering index works but is expensive** (602 MB). Only worth it if the follower count is a hot query. **Checked later** (`sql/step2_index_report.sql`, after the Step 3 benchmarks): `idx_follows_followee` had **0 scans**, since the feed workload never counts followers. In this workload it's dead weight: 602 MB that slows follow/unfollow writes.
 4. **Laptop benchmarks are noisy.** From Step 3 on, the cache is preloaded (`pg_prewarm`) before every run.
 
 ## Current database state (carried into Step 3)
