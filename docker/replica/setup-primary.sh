@@ -3,10 +3,18 @@
 # The proposal's wal_level=replica, max_wal_senders=10, max_replication_slots=10 and
 # hot_standby=on are already Postgres 16 defaults, so only these are needed:
 set -euo pipefail
+cd "$(dirname "$0")/../.."
+[ -f .env ] || { echo "error: .env missing (run: make env)" >&2; exit 1; }
+set -a; . ./.env; set +a
 # 1. replication user
-docker exec pg psql -U postgres -d app -qc \
-  "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='replicator') THEN
-     CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'lab'; END IF; END \$\$;"
+# (password passed as a psql variable, so it never appears in the command line or this file)
+docker exec -i pg psql -U postgres -d app -q -v pw="$REPLICATOR_PASSWORD" <<'SQL'
+SELECT NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'replicator') AS missing \gset
+\if :missing
+  CREATE ROLE replicator WITH REPLICATION LOGIN;
+\endif
+ALTER ROLE replicator PASSWORD :'pw';
+SQL
 # 2. allow replication connections from the Docker network (the image only allows them locally)
 docker exec pg bash -c "grep -q '^host replication replicator' \$PGDATA/pg_hba.conf || \
   echo 'host replication replicator all scram-sha-256' >> \$PGDATA/pg_hba.conf"

@@ -16,11 +16,11 @@ Usage: ryw_test.py MODE ITERATIONS [PAUSE_MS]
   PAUSE_MS: wait between the write and the read (a user refreshing later), default 0
 """
 import random, sys, time
-import psycopg
+import psycopg  # password: libpq reads PGPASSWORD (set from .env by docker compose)
 
 MODE, N = sys.argv[1], int(sys.argv[2])
 PAUSE = (int(sys.argv[3]) if len(sys.argv) > 3 else 0) / 1000
-connect = lambda host: psycopg.connect(host=host, dbname="app", user="postgres", password="lab", autocommit=True)
+connect = lambda host: psycopg.connect(host=host, dbname="app", user="postgres", autocommit=True)
 primary = connect("pg")
 replicas = [connect("replica1"), connect("replica2")]
 lsn_store = {}   # stands in for Redis: user_id -> LSN of their last write

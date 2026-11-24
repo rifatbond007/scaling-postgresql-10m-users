@@ -6,7 +6,7 @@ services:
     image: postgres:16
     container_name: pg
     environment:
-      POSTGRES_PASSWORD: lab
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (see .env.example)}
       POSTGRES_DB: app
     ports: ["5432:5432"]
     volumes: ["pgdata:/var/lib/postgresql/data"]
@@ -46,7 +46,7 @@ services:
     profiles: ["replicas"]
     depends_on: [pg]
     user: postgres
-    environment: { SLOT: replica1_slot }
+    environment: { SLOT: replica1_slot, REPLICATOR_PASSWORD: "${REPLICATOR_PASSWORD:?set REPLICATOR_PASSWORD in .env}" }
     volumes: ["replica1data:/var/lib/postgresql/data", "./replica/start-replica.sh:/start-replica.sh:ro"]
     entrypoint: ["/start-replica.sh"]
     ports: ["5433:5432"]
@@ -57,7 +57,7 @@ services:
   replica2:
     <<: *replica
     container_name: replica2
-    environment: { SLOT: replica2_slot }
+    environment: { SLOT: replica2_slot, REPLICATOR_PASSWORD: "${REPLICATOR_PASSWORD:?set REPLICATOR_PASSWORD in .env}" }
     volumes: ["replica2data:/var/lib/postgresql/data", "./replica/start-replica.sh:/start-replica.sh:ro"]
     ports: ["5434:5432"]
 
@@ -67,7 +67,7 @@ services:
     image: pglab-bench
     profiles: ["tools"]
     environment:
-      PGPASSWORD: lab
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (see .env.example)}
       PGHOST: pg
       PGUSER: postgres
       PGDATABASE: app

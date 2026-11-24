@@ -15,3 +15,6 @@ __pycache__/
 
 # PgBouncer auth file (password hash): regenerate with docker/pgbouncer/make-userlist.sh
 docker/pgbouncer/userlist.txt
+
+# local secrets: real passwords live here; .env.example is the committed template
+.env

@@ -4,9 +4,9 @@
    Count how many of their answers are 77MB (leaked) and how often A itself still sees 77MB (lost).
 2) Same with SET LOCAL inside a transaction (the fix): nothing should leak.
 Usage: txmode_pitfall.py HOST PORT"""
-import sys, threading, collections, psycopg
+import sys, threading, collections, psycopg  # password: libpq reads PGPASSWORD (set from .env by docker compose)
 host, port = sys.argv[1], int(sys.argv[2])
-conn = lambda: psycopg.connect(host=host, port=port, dbname="app", user="postgres", password="lab", autocommit=True)
+conn = lambda: psycopg.connect(host=host, port=port, dbname="app", user="postgres", autocommit=True)
 ROUNDS = 200
 
 def others(results):
@@ -20,7 +20,7 @@ def others(results):
 def fresh_server_connections():
     """Close all server backends directly on Postgres, so pooled connections start with default settings.
     (RESET sent through PgBouncer only reaches whichever server connection it happens to get.)"""
-    d = psycopg.connect(host="pg", port=5432, dbname="app", user="postgres", password="lab", autocommit=True)
+    d = psycopg.connect(host="pg", port=5432, dbname="app", user="postgres", autocommit=True)
     d.execute("SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
               "WHERE backend_type='client backend' AND pid <> pg_backend_pid()")
     d.close()
