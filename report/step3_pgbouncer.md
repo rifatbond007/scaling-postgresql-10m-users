@@ -1,6 +1,6 @@
 # Step 3: Connection pooling with PgBouncer
 
-[← Step 2](step2_indexes.md) · [Summary](00_SUMMARY.md)
+[← Step 2](step2_indexes.md) · [Summary](00_SUMMARY.md) · Next: [Step 4 →](step4_replicas.md)
 
 **Question:** what happens when thousands of clients connect, and does PgBouncer fix it?
 

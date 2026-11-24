@@ -1,0 +1,6 @@
+reads:  tps = 145.290062 (without initial connection time)  number of failed transactions: 0 (0.000%)
+writes: tps = 11.908093 (without initial connection time)  number of failed transactions: 0 (0.000%)
+feed          17438    191.20    223.40    256.10
+write          1430  39100.80  70886.96  74253.51
+write real time (excl. schedule lag): p50=338.27 p95=461.67 p99=543.11 ms
+writes rate limit schedule lag: avg 37604.984 (max 75005.110) ms

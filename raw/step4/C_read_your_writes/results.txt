@@ -1,0 +1,10 @@
+apply_delay=0 mode=replica iterations=1000 misses=997 (99.7%) served_by_replica=1000 served_by_primary=0 read_ms_p50=1.71 read_ms_p95=4.57
+apply_delay=0 mode=lsn iterations=1000 misses=0 (0.0%) served_by_replica=3 served_by_primary=997 read_ms_p50=2.19 read_ms_p95=4.76
+apply_delay=2s mode=replica iterations=1000 misses=1000 (100.0%) served_by_replica=1000 served_by_primary=0 read_ms_p50=1.63 read_ms_p95=4.22
+apply_delay=2s mode=lsn iterations=1000 misses=0 (0.0%) served_by_replica=0 served_by_primary=1000 read_ms_p50=2.24 read_ms_p95=4.83
+apply_delay=0 mode=replica pause_ms=10 iterations=300 misses=0 (0.0%) served_by_replica=300 served_by_primary=0 read_ms_p50=2.86 read_ms_p95=6.75
+apply_delay=0 mode=lsn pause_ms=10 iterations=300 misses=0 (0.0%) served_by_replica=300 served_by_primary=0 read_ms_p50=3.71 read_ms_p95=7.29
+apply_delay=0 mode=replica pause_ms=100 iterations=300 misses=0 (0.0%) served_by_replica=300 served_by_primary=0 read_ms_p50=7.41 read_ms_p95=11.38
+apply_delay=0 mode=lsn pause_ms=100 iterations=300 misses=0 (0.0%) served_by_replica=300 served_by_primary=0 read_ms_p50=7.96 read_ms_p95=13.07
+UNDER LOAD apply_delay=0 mode=replica pause_ms=100 iterations=150 misses=150 (100.0%) served_by_replica=150 served_by_primary=0 read_ms_p50=10.52 read_ms_p95=20.59
+UNDER LOAD apply_delay=0 mode=lsn pause_ms=100 iterations=150 misses=0 (0.0%) served_by_replica=5 served_by_primary=145 read_ms_p50=16.98 read_ms_p95=26.63

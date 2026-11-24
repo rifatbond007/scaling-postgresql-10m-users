@@ -18,8 +18,8 @@
 | 1 | Baseline measurement | ✅ Done | [step1_baseline.md](step1_baseline.md) |
 | 2 | Indexes and query rewrite | ✅ Done | [step2_indexes.md](step2_indexes.md) |
 | 3 | PgBouncer connection pooling | ✅ Done | [step3_pgbouncer.md](step3_pgbouncer.md) |
-| 4 | Read replicas | ⏳ Next | |
-| 5 | Partitioning | ⬜ | |
+| 4 | Read replicas | ✅ Done | [step4_replicas.md](step4_replicas.md) |
+| 5 | Partitioning | ⏳ Next | |
 | 6 | Sharding | ⬜ | |
 | 7 | Live bucket move | ⬜ | |
 | 8 | Final comparison and hot shard | ⬜ | |
@@ -43,6 +43,15 @@ Workload: 32 clients, 90% feed reads / 10% writes, 120 s.
 | 300 direct | 300 | 1.45 GB | 0 |
 | **2,000 through PgBouncer** | **8–20** | **~0.6 GB** | **0** ✅ |
 
+**Step 4: read replicas** (primary + 2 smaller replicas, all on one laptop SSD)
+
+| Check | Result |
+|---|---|
+| Users see their own new post (1,000 tries) | No routing: **99.7–100% missed**. LSN routing: **0 missed** ✅ |
+| Primary CPU when reads move to replicas | 85–98% → **~1%** |
+| Replication lag under load | median ~300 ms, p95 ~0.5 s |
+| Read throughput: 1 replica → 2 replicas | **~10% slower** (shared SSD is the bottleneck) |
+
 ## Key findings so far
 1. **The feed was slow because of a missing index.** Every feed read scanned all 10M posts.
 2. **One index fixed almost everything:** throughput rose about 950× and feed p95 dropped from 56 s to 0.1 s.
@@ -51,7 +60,9 @@ Workload: 32 clients, 90% feed reads / 10% writes, 120 s.
 5. **PgBouncer's proven win is memory and stability, not speed.** Throughput against direct connections was inconclusive.
 6. **Pool size depends on the bottleneck:** small (about 2 × cores) when CPU-bound, larger when waiting on disk.
 7. **Never use session `SET` behind transaction pooling:** it leaked to other clients in every run (0.5–29% of their answers). Use `SET LOCAL`.
-8. **Measurement on a laptop is noisy.** The cache doesn't fit in the 2 GB container, so throughput varied up to 3× with the same settings. Only alternating, back-to-back runs are compared.
+8. **LSN routing guarantees read-your-writes:** 0 misses in 2,750 reads, even under a forced 2 s lag. Without it, a read right after a write misses almost always.
+9. **Replicas take load off the primary but only add capacity with their own hardware.** On one shared SSD a second replica made reads slower, and heavy replica reads made the primary's writes ~100× slower.
+10. **Measurement on a laptop is noisy.** The cache doesn't fit in the 2 GB container, so throughput varied up to 3× with the same settings. Only alternating, back-to-back runs are compared.
 
 ## Test machine
 8 CPU cores, 7 GB RAM laptop. The Postgres container is limited to 2 GB RAM and 4 CPUs, with `shared_buffers=512MB`; the benchmark client gets 4 CPUs. This is scaled down from the proposal (16–64 GB), so compare the steps with each other, not the absolute numbers with production.

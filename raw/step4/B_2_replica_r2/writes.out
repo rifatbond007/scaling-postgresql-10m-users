@@ -1,0 +1,15 @@
+pgbench (16.16 (Debian 16.16-1.pgdg13+1))
+transaction type: /bench/write.sql
+scaling factor: 1
+query mode: simple
+number of clients: 4
+number of threads: 2
+maximum number of tries: 1
+duration: 120 s
+number of transactions actually processed: 1434
+number of failed transactions: 0 (0.000%)
+latency average = 36330.321 ms
+latency stddev = 20599.720 ms
+rate limit schedule lag: avg 35996.093 (max 74756.798) ms
+initial connection time = 26.533 ms
+tps = 11.941621 (without initial connection time)

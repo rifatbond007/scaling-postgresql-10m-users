@@ -1,0 +1,14 @@
+pgbench (16.16 (Debian 16.16-1.pgdg13+1))
+transaction type: /bench/feed_lateral.sql
+scaling factor: 1
+query mode: simple
+number of clients: 28
+number of threads: 4
+maximum number of tries: 1
+duration: 120 s
+number of transactions actually processed: 18258
+number of failed transactions: 0 (0.000%)
+latency average = 183.927 ms
+latency stddev = 29.677 ms
+initial connection time = 106.308 ms
+tps = 152.107867 (without initial connection time)

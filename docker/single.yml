@@ -1,4 +1,5 @@
-# Steps 0-3: single Postgres node (+ PgBouncer, profile "pool") (scaled down for a 7 GB laptop)
+# Steps 0-4: Postgres primary (+ PgBouncer, profile "pool"; + 2 read replicas, profile "replicas")
+# Scaled down for a 7 GB laptop.
 name: pglab
 services:
   pg:
@@ -38,6 +39,28 @@ services:
     mem_limit: 256m
     ulimits: { nofile: { soft: 10000, hard: 10000 } }
 
+  # Step 4: streaming read replicas (first run docker/replica/setup-primary.sh)
+  replica1: &replica
+    image: postgres:16
+    container_name: replica1
+    profiles: ["replicas"]
+    depends_on: [pg]
+    user: postgres
+    environment: { SLOT: replica1_slot }
+    volumes: ["replica1data:/var/lib/postgresql/data", "./replica/start-replica.sh:/start-replica.sh:ro"]
+    entrypoint: ["/start-replica.sh"]
+    ports: ["5433:5432"]
+    shm_size: 512m
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: 2
+  replica2:
+    <<: *replica
+    container_name: replica2
+    environment: { SLOT: replica2_slot }
+    volumes: ["replica2data:/var/lib/postgresql/data", "./replica/start-replica.sh:/start-replica.sh:ro"]
+    ports: ["5434:5432"]
+
   # pgbench / psql / python client (run with: run --rm bench '...'); nothing installed on the host
   bench:
     build: { context: ., dockerfile: bench.Dockerfile }
@@ -56,4 +79,4 @@ services:
     ulimits: { nofile: { soft: 10000, hard: 10000 } }
     entrypoint: ["bash", "-c"]
 
-volumes: { pgdata: {} }
+volumes: { pgdata: {}, replica1data: {}, replica2data: {} }

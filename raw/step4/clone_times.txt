@@ -1,0 +1,4 @@
+ Container replica1 Started 
+replica1 ready after 23 s
+ Container replica2 Started 
+replica2 ready after 22 s
