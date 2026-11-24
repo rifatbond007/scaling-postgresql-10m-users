@@ -1,4 +1,4 @@
-# Step 0-2: single Postgres node (scaled down for a 7 GB laptop)
+# Steps 0-3: single Postgres node (+ PgBouncer, profile "pool") (scaled down for a 7 GB laptop)
 name: pglab
 services:
   pg:
@@ -11,6 +11,7 @@ services:
     volumes: ["pgdata:/var/lib/postgresql/data"]
     shm_size: 1g
     mem_limit: 2g
+    memswap_limit: 2g     # no swap: if pg runs out of RAM only pg suffers, not the laptop
     cpus: 4
     command: >
       postgres
@@ -18,10 +19,24 @@ services:
       -c effective_cache_size=1536MB
       -c work_mem=16MB
       -c maintenance_work_mem=256MB
-      -c max_connections=100
+      -c max_connections=${PG_MAX_CONN:-100}
       -c shared_preload_libraries=pg_stat_statements
       -c track_io_timing=on
       -c max_wal_size=4GB
+
+  # Step 3: connection pooler (start with: --profile pool up -d pgbouncer)
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: pgbouncer
+    profiles: ["pool"]
+    depends_on: [pg]
+    ports: ["6432:6432"]
+    volumes:
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+      - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt:ro
+    cpus: 1
+    mem_limit: 256m
+    ulimits: { nofile: { soft: 10000, hard: 10000 } }
 
   # pgbench / psql client; same image so no host install needed
   bench:

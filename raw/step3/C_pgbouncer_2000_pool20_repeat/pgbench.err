@@ -1,0 +1,12 @@
+progress: 10.0 s, 2.3 tps, lat 22.090 ms stddev 2.916, 0 failed
+progress: 20.0 s, 1426.9 tps, lat 1309.117 ms stddev 284.328, 0 failed
+progress: 30.0 s, 1388.9 tps, lat 1445.261 ms stddev 133.686, 0 failed
+progress: 40.0 s, 1409.1 tps, lat 1412.741 ms stddev 153.079, 0 failed
+progress: 50.0 s, 1457.3 tps, lat 1377.065 ms stddev 163.939, 0 failed
+progress: 60.0 s, 1436.5 tps, lat 1394.128 ms stddev 78.925, 0 failed
+progress: 70.0 s, 1262.9 tps, lat 1583.224 ms stddev 362.912, 0 failed
+progress: 80.0 s, 1434.9 tps, lat 1380.340 ms stddev 55.865, 0 failed
+progress: 90.0 s, 1285.7 tps, lat 1563.914 ms stddev 113.421, 0 failed
+progress: 100.0 s, 1267.7 tps, lat 1528.849 ms stddev 165.948, 0 failed
+progress: 110.0 s, 1350.6 tps, lat 1520.719 ms stddev 215.069, 0 failed
+progress: 120.0 s, 1337.4 tps, lat 1501.191 ms stddev 155.755, 0 failed

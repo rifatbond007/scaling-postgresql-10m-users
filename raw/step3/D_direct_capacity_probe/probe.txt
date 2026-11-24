@@ -1,0 +1,3 @@
+clients=200 peak_pg_mem=1296MiB OOMKilled=false
+clients=300 peak_pg_mem=1498MiB OOMKilled=false
+clients=400 peak_pg_mem=1818MiB OOMKilled=false

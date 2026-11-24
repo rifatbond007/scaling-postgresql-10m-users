@@ -9,8 +9,8 @@ Implements Part B of `Scaling_PostgreSQL_10M_Users.docx`: one change at a time, 
 report/     human-readable results, one page per step   ← read these
 raw/        machine output per step (pgbench, EXPLAIN plans, txlog/)
 sql/        schema.sql, seed.sql
-bench/      workload scripts (feed*.sql, write.sql), run.sh, percentiles.py
-docker/     single.yml (Postgres + bench client), bench.Dockerfile
+bench/      workload scripts (feed*.sql, write.sql), run.sh, run_sampled.sh, sample.sh, percentiles.py
+docker/     single.yml (Postgres, PgBouncer, bench client), bench.Dockerfile, pgbouncer/
 app/        Python routing/sharding code (Steps 4-7)
 ```
 
@@ -25,11 +25,22 @@ docker exec -it pg psql -U postgres -d app
 # run a benchmark: LABEL CLIENTS THREADS SECONDS "scripts"  -> output in raw/LABEL/
 docker compose -f docker/single.yml run --rm bench '/bench/run.sh step3/example 32 8 120 "feed_lateral.sql@9 write.sql@1"'
 
+# Step 3: PgBouncer (port 6432). First time after a (re)seed: regenerate its auth file
+docker/pgbouncer/make-userlist.sh
+docker compose -f docker/single.yml --profile pool up -d pgbouncer
+# benchmark through PgBouncer, with CPU/memory/connection sampling -> raw/LABEL/samples.csv
+bench/run_sampled.sh step3/example 2000 16 120 "feed_lateral.sql@9 write.sql@1" 6432 pgbouncer
+# change pool size: edit docker/pgbouncer/pgbouncer.ini, then `docker restart pgbouncer` (RELOAD won't see the edit)
+
+# Postgres with a different connection limit
+PG_MAX_CONN=2500 docker compose -f docker/single.yml up -d pg
+
 # rebuild from scratch (deletes all data)
 docker compose -f docker/single.yml down -v
 docker compose -f docker/single.yml up -d pg
 docker exec -i pg psql -U postgres -d app < sql/schema.sql
 docker exec -i pg psql -U postgres -d app < sql/seed.sql
+# then recreate the Step 2 indexes (see report/step2_indexes.md)
 ```
 
 GUI connection: host `localhost`, port `5432`, db `app`, user `postgres`, password `lab`.

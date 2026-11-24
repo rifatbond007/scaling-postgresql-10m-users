@@ -1,0 +1,4 @@
+pgbench: error: connection to server at "pg" (172.18.0.2), port 5432 failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+pgbench: error: could not create connection for client 708

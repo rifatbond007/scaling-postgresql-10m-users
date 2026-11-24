@@ -1,6 +1,6 @@
 # Step 2: Indexes and query rewrite
 
-[← Step 1](step1_baseline.md) · [Summary](00_SUMMARY.md)
+[← Step 1](step1_baseline.md) · [Summary](00_SUMMARY.md) · Next: [Step 3 →](step3_pgbouncer.md)
 
 Same test as Step 1: 32 clients, 90% feed / 10% write, 120 s. **One change at a time.**
 

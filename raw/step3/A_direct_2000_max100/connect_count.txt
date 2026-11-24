@@ -1,0 +1,2 @@
+attempted=2000 connected=100 refused=1900
+   1900 x sorry, too many clients already

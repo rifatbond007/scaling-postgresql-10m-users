@@ -7,6 +7,9 @@ OUT=/raw/$LABEL; rm -rf "$OUT"; mkdir -p "$OUT/txlog"; cd "$OUT"
 FARGS=(); NAMES=()
 for s in $SCRIPTS; do FARGS+=(-f "/bench/$s"); NAMES+=("${s%%.sql*}"); done
 
+echo "== prewarm cache (indexes into shared_buffers, posts heap into OS cache)"
+psql -h "${PGHOST}" -p 5432 -qAt -c "SELECT pg_prewarm('idx_posts_user_created_live'), pg_prewarm('follows_pkey'), pg_prewarm('posts','read');" >/dev/null 2>&1 || echo "prewarm skipped"
+
 echo "== warm-up 30s (discarded)"
 pgbench -n -h "$HOST" -p "$PORT" "${FARGS[@]}" -c "$C" -j "$J" -T 30 >/dev/null 2>&1 || true
 

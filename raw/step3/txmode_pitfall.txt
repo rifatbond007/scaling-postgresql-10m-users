@@ -1,0 +1,14 @@
+===== via pgbouncer 6432
+--- session SET ---
+  client A saw its own 77MB:          34/200 (17%)
+  other clients saw A's 77MB (leak):  698/4000 (17.4%)
+--- local SET ---
+  client A saw its own 77MB:          200/200 (100%)
+  other clients saw A's 77MB (leak):  0/4000 (0.0%)
+===== via pg 5432
+--- session SET ---
+  client A saw its own 77MB:          200/200 (100%)
+  other clients saw A's 77MB (leak):  0/4000 (0.0%)
+--- local SET ---
+  client A saw its own 77MB:          200/200 (100%)
+  other clients saw A's 77MB (leak):  0/4000 (0.0%)

@@ -1,0 +1,32 @@
+pgbench (16.16 (Debian 16.16-1.pgdg13+1))
+transaction type: multiple scripts
+scaling factor: 1
+query mode: simple
+number of clients: 2000
+number of threads: 16
+maximum number of tries: 1
+duration: 120 s
+number of transactions actually processed: 127833
+number of failed transactions: 0 (0.000%)
+latency average = 1769.546 ms
+latency stddev = 645.635 ms
+initial connection time = 7555.472 ms
+tps = 1123.660384 (without initial connection time)
+SQL script 1: /bench/feed_lateral.sql
+ - weight: 9 (targets 90.0% of total)
+ - 114861 transactions (89.9% of total, tps = 1009.635661)
+ - number of failed transactions: 0 (0.000%)
+ - latency average = 1773.531 ms
+ - latency stddev = 640.352 ms
+ - statement latencies in milliseconds and failures:
+         0.002           0  \set uid random(1, 1000000)
+      1770.788           0  SELECT p.id, p.user_id, p.body, p.created_at
+SQL script 2: /bench/write.sql
+ - weight: 1 (targets 10.0% of total)
+ - 12849 transactions (10.1% of total, tps = 112.943546)
+ - number of failed transactions: 0 (0.000%)
+ - latency average = 1762.690 ms
+ - latency stddev = 660.366 ms
+ - statement latencies in milliseconds and failures:
+         0.002           0  \set uid random(1, 1000000)
+      1763.129           0  INSERT INTO posts (user_id, body) VALUES (:uid, 'hello from ' || :uid);

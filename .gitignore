@@ -12,3 +12,6 @@ __pycache__/
 # Office lock files
 ~$*
 .~lock.*#
+
+# PgBouncer auth file (password hash): regenerate with docker/pgbouncer/make-userlist.sh
+docker/pgbouncer/userlist.txt
